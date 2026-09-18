@@ -43,6 +43,18 @@ function injectStyles(): void {
   color: #4338ca;
   border: 1px solid #c7d2fe;
 }
+.gppe-pill-success {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 700;
+  background: #16a34a;
+  color: #ffffff;
+  border: 1px solid #15803d;
+}
 .gppe-link {
   color: inherit;
   text-decoration: none;
@@ -163,6 +175,15 @@ const TimedCommitStatusHeader: React.FC<CommitStatusContext> = ({ check, manager
 
   if (!environment || !durationParsed) {
     return <NameLink name={check.name} url={check.url} />;
+  }
+
+  if (check.status === 'success') {
+    return (
+      <span className="gppe-row">
+        <NameLink name={check.name} url={check.url} />
+        <span className="gppe-pill-success">✓ {environment.phase}</span>
+      </span>
+    );
   }
 
   if (check.status !== 'pending') {
