@@ -35,13 +35,21 @@ npm install
 npm run build
 ```
 
-Output: `dist/plugin-timed-commit-status.js`, a single self-installing script
-(webpack `library: { type: 'window' }`).
+Output: two identical, self-installing scripts (webpack `library: { type:
+'window' }`) built from the same entry point:
 
-The filename matters: the promoter webserver's `/plugins.js` route serves the
-concatenation of files matching a `plugin*.js` naming convention out of its
-plugins directory, so `plugin-timed-commit-status.js` is ready to be dropped
-in directly.
+- `dist/plugin-timed-commit-status.js`
+- `dist/extension-plugin-timed-commit-status.js`
+
+Filenames matter, and the two loading mechanisms this plugin targets disagree
+on the convention: the promoter webserver's `/plugins.js` route (and its
+build-time dashboard/extension embedding) only picks up files matching
+`plugin*.js`, while Argo CD's own server-side extension concatenation (used
+when this plugin is loaded via an `argocd-extension-installer` init
+container, see [Developing UI Plugins](https://github.com/argoproj-labs/gitops-promoter/blob/ui-plugins/docs/contributing/developing-ui-plugins.md))
+only picks up files matching `extension*.js`. Neither convention is
+configurable, so this plugin ships under both names rather than forcing
+one loading path to work around the other.
 
 ## The two hard constraints
 
@@ -80,6 +88,11 @@ floor as an unenforced assumption.
    plugin's `registerCommitStatusRowPlugin` call runs and overrides the
    built-in `TimedCommitStatus` row for both the standalone dashboard and
    any ArgoCD UI extension surface pointed at the same promoter instance.
+
+To load this plugin into a real Argo CD instance via `argocd-extension-installer`
+instead (no promoter webserver involved), use `dist/extension-plugin-timed-commit-status.js`
+and follow the "Loading UI Plugins Into the Extension at Runtime" section of
+[Integrating with Argo CD](https://github.com/argoproj-labs/gitops-promoter/blob/ui-plugins/docs/integrating-with-argocd/index.md).
 
 ## The alternate design
 

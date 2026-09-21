@@ -1,9 +1,18 @@
 const path = require('path');
 
-module.exports = {
+// Two identical builds from the same entry point, under two different names:
+// the promoter's dashboard (build-embed and --plugins-dir) only picks up
+// files matching `plugin*.js`, while Argo CD's own server (serving
+// /extensions.js to argocd-extension-installer-loaded init containers) only
+// picks up files matching `extension*.js`. Neither glob is configurable from
+// here, so one plugin ships as both filenames rather than forcing a single
+// name to satisfy both.
+const targets = ['plugin-timed-commit-status.js', 'extension-plugin-timed-commit-status.js'];
+
+module.exports = targets.map((filename) => ({
   entry: './src/index.tsx',
   output: {
-    filename: 'plugin-timed-commit-status.js',
+    filename,
     path: path.resolve(__dirname, 'dist'),
     library: { type: 'window' },
   },
@@ -28,4 +37,4 @@ module.exports = {
     ],
   },
   mode: 'production',
-};
+}));
