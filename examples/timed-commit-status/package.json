@@ -1,5 +1,5 @@
 {
-  "name": "gitops-promoter-example-plugin",
+  "name": "timed-commit-status",
   "version": "0.1.0",
   "private": true,
   "description": "Example external UI plugin for GitOps Promoter: an alternate TimedCommitStatus row, built and loaded outside the promoter repo.",
